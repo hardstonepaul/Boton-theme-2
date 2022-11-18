@@ -22,21 +22,22 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
-<div id="_desktop_contact_link">
-  <div id="contact-link">
-    {if $contact_infos.phone}
-      {* [1][/1] is for a HTML tag. *}
-      {l
-        s='Call us: [1]%phone%[/1]'
-        sprintf=[
-          '[1]' => "<a href='tel:{$contact_infos['phone']|replace:' ':''}'>",
-          '[/1]' => '</a>',
-          '%phone%' => $contact_infos.phone
-        ]
-        d='Shop.Theme.Global'
-      }
-    {else}
-      <a href="{$urls.pages.contact}">{l s='Contact us' d='Shop.Theme.Global'}</a>
-    {/if}
-  </div>
+<div id="contact-link">
+  <a href="https://api.whatsapp.com/send?phone=573212275275&text=Hola%21%20Estoy%20interesado%20en...&source=&data=" target="_blank" title="WhatsApp">
+      <div class="wha-logo"></div>
+      <span class="hidden-sm-down">321 227 5275</span>
+  </a>
+  {*{if $contact_infos.phone}
+    {l
+      s='Call us: [1]%phone%[/1]'
+      sprintf=[
+        '[1]' => '<span>',
+        '[/1]' => '</span>',
+        '%phone%' => $contact_infos.phone
+      ]
+      d='Shop.Theme.Global'
+    }
+  {else}
+    <a href="{$urls.pages.contact}">{l s='Contact us' d='Shop.Theme.Global'}</a>
+  {/if}*}
 </div>

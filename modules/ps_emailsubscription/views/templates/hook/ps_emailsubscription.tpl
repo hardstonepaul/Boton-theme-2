@@ -24,8 +24,13 @@
  *}
 
 <div class="block_newsletter col-lg-8 col-md-12 col-sm-12" id="blockEmailSubscription_{$hookName}">
+
   <div class="row">
-    <p id="block-newsletter-label" class="col-md-5 col-xs-12">{l s='Get our latest news and special sales' d='Shop.Theme.Global'}</p>
+    <img class="" src="https://esferos.com/imagenes/mail-80.jpg" alt="">
+    <div class="col-md-5 col-xs-12">
+      <h4 class="card-title" id="block-newsletter-label">{l s='News and Sales' d='Shop.Theme.Global'}</h4>
+      <p id="block-newsletter-label">{l s='Get our latest news and special sales' d='Shop.Theme.Global'}</p>
+    </div>
     <div class="col-md-7 col-xs-12">
       <form action="{$urls.current_url}#blockEmailSubscription_{$hookName}" method="post">
         <div class="row">
@@ -58,7 +63,7 @@
           </div>
           <div class="col-xs-12">
               {if $conditions}
-                <p>{$conditions}</p>
+                <p>{$conditions nofilter}</p>
               {/if}
               {if $msg}
                 <p class="alert {if $nw_error}alert-danger{else}alert-success{/if}">

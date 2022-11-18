@@ -26,29 +26,29 @@
   <div class="user-info">
     {if $logged}
       <a
-        class="logout hidden-sm-down"
-        href="{$urls.actions.logout}"
-        rel="nofollow"
-      >
-        <i class="material-icons">&#xE7FF;</i>
-        {l s='Sign out' d='Shop.Theme.Actions'}
-      </a>
-      <a
         class="account"
         href="{$urls.pages.my_account}"
         title="{l s='View my customer account' d='Shop.Theme.Customeraccount'}"
         rel="nofollow"
       >
-        <i class="material-icons hidden-md-up logged">&#xE7FF;</i>
+        <i class="material-icons logged">insert_emoticon</i>
         <span class="hidden-sm-down">{$customerName}</span>
+      </a>
+      <a
+        class="logout hidden-sm-down"
+        href="{$urls.actions.logout}"
+        rel="nofollow"
+      >
+        <i class="material-icons">power_settings_new</i>
+        {l s='Sign out' d='Shop.Theme.Actions'}
       </a>
     {else}
       <a
-        href="{$urls.pages.authentication}?back={$urls.current_url|urlencode}"
+        href="{$urls.pages.my_account}"
         title="{l s='Log in to your customer account' d='Shop.Theme.Customeraccount'}"
         rel="nofollow"
       >
-        <i class="material-icons">&#xE7FF;</i>
+        <i class="material-icons">person</i>
         <span class="hidden-sm-down">{l s='Sign in' d='Shop.Theme.Actions'}</span>
       </a>
     {/if}

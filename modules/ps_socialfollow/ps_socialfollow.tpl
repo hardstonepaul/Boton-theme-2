@@ -24,11 +24,16 @@
  *}
 
 {block name='block_social'}
-  <div class="block-social col-lg-4 col-md-12 col-sm-12">
+<div class="block-social col-lg-4 col-md-4 col-sm-12">
+<div class="card">
+  <img class="card-img-top" src="https://esferos.com/imagenes/social-80.jpg" alt="">
+  <div class="card-block">
     <ul>
       {foreach from=$social_links item='social_link'}
         <li class="{$social_link.class}"><a href="{$social_link.url}" target="_blank" rel="noopener noreferrer">{$social_link.label}</a></li>
       {/foreach}
     </ul>
   </div>
+</div>
+</div>
 {/block}

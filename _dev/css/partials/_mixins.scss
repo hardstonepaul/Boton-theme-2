@@ -1,33 +1,34 @@
 @mixin search-box {
   form {
     position: relative;
-
     input[type="text"] {
-      min-width: 255px;
-      padding: 10px;
+      width: 100%;
+      height: 3.5rem;
+      padding: 0.625rem;
       color: $gray;
-      border: none;
-      border: $input-btn-border-width solid $input-border-color;
-
+      border-radius: 10px 28px 28px 10px;
+      border: 3px solid $brand-primary;
       &:focus {
         color: $gray-darker;
-        background: $white;
-        outline: 3px $brand-primary solid;
+        background: #fff;
+        border: 4px $light-blue solid;
+        outline: none;
 
         + button .search {
           color: $brand-primary;
         }
       }
     }
-
     button[type="submit"] {
       position: absolute;
-      right: 0.125rem;
-      bottom: 0.3125rem;
-      color: $gray;
+      right: 3rem;
+      color: $light-blue;
       background: none;
       border: none;
-
+      cursor: pointer;
+      i {
+        font-size: 36px;
+      }
       .search:hover {
         color: $brand-primary;
       }
@@ -40,5 +41,5 @@
 }
 
 @mixin box-shadow-light {
-  box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 5px 25px 0 rgba(0, 0, 0, 0.32);
 }

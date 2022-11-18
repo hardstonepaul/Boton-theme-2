@@ -29,7 +29,6 @@ function setUpCheckout() {
   $(prestashop.themeSelectors.checkout.termsLink).on('click', (event) => {
     event.preventDefault();
     let url = $(event.target).attr('href');
-
     if (url) {
       // TODO: Handle request if no pretty URL
       url += '?content_only=1';
@@ -46,7 +45,7 @@ function setUpCheckout() {
   });
 
   $(prestashop.themeSelectors.checkout.giftCheckbox).on('click', () => {
-    $('#gift').slideToggle();
+    $('#gift').collapse('toggle');
   });
 }
 
@@ -54,7 +53,6 @@ function toggleImage() {
   // Arrow show/hide details Checkout page
   $(prestashop.themeSelectors.checkout.imagesLink).on('click', function () {
     const icon = $(this).find('i.material-icons');
-
     if (icon.text() === 'expand_more') {
       icon.text('expand_less');
     } else {

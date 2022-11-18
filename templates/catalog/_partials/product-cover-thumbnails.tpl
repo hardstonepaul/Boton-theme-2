@@ -22,12 +22,12 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
-<div class="images-container js-images-container">
+<div class="images-container">
   {block name='product_cover'}
     <div class="product-cover">
       {if $product.default_image}
         <img
-          class="js-qv-product-cover img-fluid"
+          class="js-qv-product-cover"
           src="{$product.default_image.bySize.large_default.url}"
           {if !empty($product.default_image.legend)}
             alt="{$product.default_image.legend}"
@@ -35,21 +35,15 @@
           {else}
             alt="{$product.name}"
           {/if}
+          style="width:100%;"
+          itemprop="image"
           loading="lazy"
-          width="{$product.default_image.bySize.large_default.width}"
-          height="{$product.default_image.bySize.large_default.height}"
         >
         <div class="layer hidden-sm-down" data-toggle="modal" data-target="#product-modal">
           <i class="material-icons zoom-in">search</i>
         </div>
       {else}
-        <img
-          class="img-fluid"
-          src="{$urls.no_picture_image.bySize.medium_default.url}"
-          loading="lazy"
-          width="{$urls.no_picture_image.bySize.medium_default.width}"
-          height="{$urls.no_picture_image.bySize.medium_default.height}"
-        >
+        <img src="{$urls.no_picture_image.bySize.large_default.url}" style="width:100%;" loading="lazy">
       {/if}
     </div>
   {/block}
@@ -58,21 +52,21 @@
     <div class="js-qv-mask mask">
       <ul class="product-images js-qv-product-images">
         {foreach from=$product.images item=image}
-          <li class="thumb-container js-thumb-container">
+          <li class="thumb-container">
             <img
-              class="thumb js-thumb {if $image.id_image == $product.default_image.id_image} selected js-thumb-selected {/if}"
+              class="thumb js-thumb {if $image.id_image == $product.default_image.id_image} selected {/if}"
               data-image-medium-src="{$image.bySize.medium_default.url}"
               data-image-large-src="{$image.bySize.large_default.url}"
-              src="{$image.bySize.small_default.url}"
+              src="{$image.bySize.home_default.url}"
               {if !empty($image.legend)}
                 alt="{$image.legend}"
                 title="{$image.legend}"
               {else}
                 alt="{$product.name}"
               {/if}
+              width="100"
+              itemprop="image"
               loading="lazy"
-              width="{$product.default_image.bySize.small_default.width}"
-              height="{$product.default_image.bySize.small_default.height}"
             >
           </li>
         {/foreach}

@@ -41,7 +41,6 @@ function toggleMobileStyles() {
   if (prestashop.responsive.mobile) {
     $("*[id^='_desktop_']").each((idx, el) => {
       const target = $(`#${el.id.replace('_desktop_', '_mobile_')}`);
-
       if (target.length) {
         swapChildren($(el), target);
       }
@@ -49,7 +48,6 @@ function toggleMobileStyles() {
   } else {
     $("*[id^='_mobile_']").each((idx, el) => {
       const target = $(`#${el.id.replace('_mobile_', '_desktop_')}`);
-
       if (target.length) {
         swapChildren($(el), target);
       }

@@ -25,32 +25,25 @@
 <div class="col-md-6 links">
   <div class="row">
   {foreach $linkBlocks as $linkBlock}
-    <div class="col-md-6 wrapper">
-      <p class="h3 hidden-sm-down">{$linkBlock.title}</p>
-      <div class="title clearfix hidden-md-up" data-target="#footer_sub_menu_{$linkBlock.id}" data-toggle="collapse">
-        <span class="h3">{$linkBlock.title}</span>
-        <span class="float-xs-right">
-          <span class="navbar-toggler collapse-icons">
-            <i class="material-icons add">&#xE313;</i>
-            <i class="material-icons remove">&#xE316;</i>
-          </span>
-        </span>
+    <div class="col-md-6">
+      <div class="card">
+      <h5 class="card-header">{$linkBlock.title}</h5>
+        <ul class="list-group list-group-flush">
+          {foreach $linkBlock.links as $link}
+            <li class="list-group-item">
+              <a
+                  id="{$link.id}-{$linkBlock.id}"
+                  class="{$link.class}"
+                  href="{$link.url}"
+                  title="{$link.description}"
+                  {if !empty($link.target)} target="{$link.target}" {/if}
+              >
+                {$link.title}
+              </a>
+            </li>
+          {/foreach}
+        </ul>
       </div>
-      <ul id="footer_sub_menu_{$linkBlock.id}" class="collapse">
-        {foreach $linkBlock.links as $link}
-          <li>
-            <a
-                id="{$link.id}-{$linkBlock.id}"
-                class="{$link.class}"
-                href="{$link.url}"
-                title="{$link.description}"
-                {if !empty($link.target)} target="{$link.target}" {/if}
-            >
-              {$link.title}
-            </a>
-          </li>
-        {/foreach}
-      </ul>
     </div>
   {/foreach}
   </div>

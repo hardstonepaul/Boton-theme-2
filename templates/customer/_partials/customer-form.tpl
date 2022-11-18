@@ -28,22 +28,16 @@
   {/block}
 
 <form action="{block name='customer_form_actionurl'}{$action}{/block}" id="customer-form" class="js-customer-form" method="post">
-  <div>
+  <section>
     {block "form_fields"}
       {foreach from=$formFields item="field"}
         {block "form_field"}
-          {if $field.type === "password"}
-            <div class="field-password-policy">
-              {form_field field=$field}
-            </div>
-          {else}
-            {form_field field=$field}
-          {/if}
+          {form_field field=$field}
         {/block}
       {/foreach}
       {$hook_create_account_form nofilter}
     {/block}
-  </div>
+  </section>
 
   {block name='customer_form_footer'}
     <footer class="form-footer clearfix">

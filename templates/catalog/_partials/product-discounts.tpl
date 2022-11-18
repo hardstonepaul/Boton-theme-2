@@ -22,7 +22,7 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
-<section class="product-discounts js-product-discounts">
+<section class="product-discounts">
   {if $product.quantity_discounts}
     <p class="h6 product-discounts-title">{l s='Volume discounts' d='Shop.Theme.Catalog'}</p>
     {block name='product_discount_table'}
@@ -31,7 +31,7 @@
         <tr>
           <th>{l s='Quantity' d='Shop.Theme.Catalog'}</th>
           <th>{$configuration.quantity_discount.label}</th>
-          <th>{l s='You Save' d='Shop.Theme.Catalog'}</th>
+          {*<th>{l s='You Save' d='Shop.Theme.Catalog'}</th>*}
         </tr>
         </thead>
         <tbody>
@@ -39,7 +39,7 @@
           <tr data-discount-type="{$quantity_discount.reduction_type}" data-discount="{$quantity_discount.real_value}" data-discount-quantity="{$quantity_discount.quantity}">
             <td>{$quantity_discount.quantity}</td>
             <td>{$quantity_discount.discount}</td>
-            <td>{$quantity_discount.save}</td>
+            {*<td>{$quantity_discount.save}</td>*}
           </tr>
         {/foreach}
         </tbody>

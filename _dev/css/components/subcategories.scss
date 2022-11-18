@@ -1,56 +1,47 @@
 #subcategories {
-  margin-bottom: 20px;
-  border-top: 1px solid $gray-light;
-
+  margin: 4.5rem 0;
   .subcategory-heading {
     margin-bottom: 20px;
-    font-weight: 500;
+    font-size: 3rem;
   }
-
   ul {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 0 0 -10px;
-
     li {
-      width: calc(100% / 4 - 20px);
+      width: calc(100% / 3 - 20px);
       min-width: 200px;
       margin: 10px;
       text-align: center;
-
       .subcategory-image {
-        padding: 0 0 8px;
-
+        padding: 0;
         a {
           display: block;
-          padding: 9px;
-          border: 1px solid $gray-light;
-
+          margin: 0 0 .5rem 0;
           img {
+            border-radius: $border-radius-sm;
+            width: 100%;
             max-width: 100%;
-            vertical-align: top;
+            transition: all 0.25s ease-out;
           }
         }
       }
-
       .subcategory-name {
         text-transform: uppercase;
-
-        &:hover {
-          color: $brand-primary;
-        }
+        color: $light-blue;
       }
-
       .cat_desc {
         display: none;
       }
-
       &:hover {
         .subcategory-image {
           a {
-            padding: 5px;
-            border: 5px solid $brand-primary;
+            img {
+              border-radius: $border-radius-lg;
+            }
           }
+        }
+        .subcategory-name {
+          color: $brand-primary;
         }
       }
     }

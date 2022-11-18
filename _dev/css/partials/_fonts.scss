@@ -1,11 +1,11 @@
 /* stylelint-disable */
 @import "~manrope/complete/font.css";
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,700;1,200;1,700&display=swap');
 
 @font-face {
   font-family: "Material Icons";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
   src: url(~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
   src:
     local("Material Icons"), local("MaterialIcons-Regular"), url(~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff2)

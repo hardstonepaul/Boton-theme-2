@@ -30,30 +30,33 @@ import "velocity-animate";
 import ProductMinitature from './components/product-miniature';
 
 $(document).ready(() => {
-  const move = (direction) => {
-    const THUMB_MARGIN = 20;
-    const $thumbnails = $('.js-qv-product-images');
-    const thumbHeight = $('.js-qv-product-images li img').height() + THUMB_MARGIN;
-    const currentPosition = $thumbnails.position().top;
-    $thumbnails.velocity(
-      {
-        translateY:
-          direction === 'up'
-            ? currentPosition + thumbHeight
-            : currentPosition - thumbHeight,
-      },
-      () => {
-        if ($thumbnails.position().top >= 0) {
-          $('.arrow-up').css('opacity', '.2');
-        } else if (
-          $thumbnails.position().top + $thumbnails.height()
-          <= $('.js-qv-mask').height()
-        ) {
-          $('.arrow-down').css('opacity', '.2');
-        }
-      },
-    );
-  };
+  const history = window.location.href;
+
+  prestashop.on('clickQuickView', (elm) => {
+    const data = {
+      action: 'quickview',
+      id_product: elm.dataset.idProduct,
+      id_product_attribute: elm.dataset.idProductAttribute,
+    };
+    $.post(prestashop.urls.pages.product, data, null, 'json')
+      .then((resp) => {
+        $('body').append(resp.quickview_html);
+        const productModal = $(
+          `#quickview-modal-${resp.product.id}-${resp.product.id_product_attribute}`,
+        );
+        productModal.modal('show');
+        productConfig(productModal);
+        productModal.on('hidden.bs.modal', () => {
+          productModal.remove();
+        });
+      })
+      .fail((resp) => {
+        prestashop.emit('handleError', {
+          eventType: 'clickQuickView',
+          resp,
+        });
+      });
+  });
 
   const productConfig = (qv) => {
     const MAX_THUMBS = 4;
@@ -98,36 +101,32 @@ $(document).ready(() => {
       min: 1,
       max: 1000000,
     });
-
-    $(prestashop.themeSelectors.touchspin).off('touchstart.touchspin');
   };
 
-  prestashop.on('clickQuickView', (elm) => {
-    const data = {
-      action: 'quickview',
-      id_product: elm.dataset.idProduct,
-      id_product_attribute: elm.dataset.idProductAttribute,
-    };
-    $.post(prestashop.urls.pages.product, data, null, 'json')
-      .then((resp) => {
-        $('body').append(resp.quickview_html);
-        const productModal = $(
-          `#quickview-modal-${resp.product.id}-${resp.product.id_product_attribute}`,
-        );
-        productModal.modal('show');
-        productConfig(productModal);
-        productModal.on('hidden.bs.modal', () => {
-          productModal.remove();
-        });
-      })
-      .fail((resp) => {
-        prestashop.emit('handleError', {
-          eventType: 'clickQuickView',
-          resp,
-        });
-      });
-  });
-
+  const move = (direction) => {
+    const THUMB_MARGIN = 20;
+    const $thumbnails = $('.js-qv-product-images');
+    const thumbHeight = $('.js-qv-product-images li img').height() + THUMB_MARGIN;
+    const currentPosition = $thumbnails.position().top;
+    $thumbnails.velocity(
+      {
+        translateY:
+          direction === 'up'
+            ? currentPosition + thumbHeight
+            : currentPosition - thumbHeight,
+      },
+      () => {
+        if ($thumbnails.position().top >= 0) {
+          $('.arrow-up').css('opacity', '.2');
+        } else if (
+          $thumbnails.position().top + $thumbnails.height()
+          <= $('.js-qv-mask').height()
+        ) {
+          $('.arrow-down').css('opacity', '.2');
+        }
+      },
+    );
+  };
   $('body').on(
     'click',
     prestashop.themeSelectors.listing.searchFilterToggler,
@@ -171,41 +170,6 @@ $(document).ready(() => {
     return $(event.target).parent()[0].dataset.searchUrl;
   };
 
-  function updateProductListDOM(data) {
-    $(prestashop.themeSelectors.listing.searchFilters).replaceWith(
-      data.rendered_facets,
-    );
-    $(prestashop.themeSelectors.listing.activeSearchFilters).replaceWith(
-      data.rendered_active_filters,
-    );
-    $(prestashop.themeSelectors.listing.listTop).replaceWith(
-      data.rendered_products_top,
-    );
-
-    const renderedProducts = $(data.rendered_products);
-    const productSelectors = $(prestashop.themeSelectors.listing.product);
-
-    if (productSelectors.length > 0) {
-      productSelectors.removeClass().addClass(productSelectors.first().attr('class'));
-    } else {
-      productSelectors.removeClass().addClass(renderedProducts.first().attr('class'));
-    }
-
-    $(prestashop.themeSelectors.listing.list).replaceWith(renderedProducts);
-
-    $(prestashop.themeSelectors.listing.listBottom).replaceWith(
-      data.rendered_products_bottom,
-    );
-    if (data.rendered_products_header) {
-      $(prestashop.themeSelectors.listing.listHeader).replaceWith(
-        data.rendered_products_header,
-      );
-    }
-
-    const productMinitature = new ProductMinitature();
-    productMinitature.init();
-  }
-
   $('body').on(
     'change',
     `${prestashop.themeSelectors.listing.searchFilters} input[data-search-url]`,
@@ -233,9 +197,8 @@ $(document).ready(() => {
   });
 
   window.addEventListener('popstate', (e) => {
-    if (e.state && e.state.current_url) {
-      window.location.href = e.state.current_url;
-    }
+    const {state} = e;
+    window.location.href = state && state.current_url ? state.current_url : history;
   });
 
   $('body').on(
@@ -252,3 +215,27 @@ $(document).ready(() => {
     window.scrollTo(0, 0);
   });
 });
+
+function updateProductListDOM(data) {
+  $(prestashop.themeSelectors.listing.searchFilters).replaceWith(
+    data.rendered_facets,
+  );
+  $(prestashop.themeSelectors.listing.activeSearchFilters).replaceWith(
+    data.rendered_active_filters,
+  );
+  $(prestashop.themeSelectors.listing.listTop).replaceWith(
+    data.rendered_products_top,
+  );
+  $(prestashop.themeSelectors.listing.list).replaceWith(data.rendered_products);
+  $(prestashop.themeSelectors.listing.listBottom).replaceWith(
+    data.rendered_products_bottom,
+  );
+  if (data.rendered_products_header) {
+    $(prestashop.themeSelectors.listing.listHeader).replaceWith(
+      data.rendered_products_header,
+    );
+  }
+
+  const productMinitature = new ProductMinitature();
+  productMinitature.init();
+}

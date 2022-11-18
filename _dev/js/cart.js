@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import prestashop from 'prestashop';
-import debounce from './components/debounce';
 
 prestashop.cart = prestashop.cart || {};
 
@@ -10,60 +9,6 @@ const spinnerSelector = 'input[name="product-quantity-spin"]';
 let hasError = false;
 let isUpdateOperation = false;
 let errorMsg = '';
-
-const CheckUpdateQuantityOperations = {
-  switchErrorStat: () => {
-    /**
-     * if errorMsg is not empty or if notifications are shown, we have error to display
-     * if hasError is true, quantity was not updated : we don't disable checkout button
-     */
-    const $checkoutBtn = $(prestashop.themeSelectors.checkout.btn);
-
-    if ($(prestashop.themeSelectors.notifications.dangerAlert).length || (errorMsg !== '' && !hasError)) {
-      $checkoutBtn.addClass('disabled');
-    }
-
-    if (errorMsg !== '') {
-      const strError = `
-        <article class="alert alert-danger" role="alert" data-alert="danger">
-          <ul>
-            <li>${errorMsg}</li>
-          </ul>
-        </article>
-      `;
-      $(prestashop.themeSelectors.notifications.container).html(strError);
-      errorMsg = '';
-      isUpdateOperation = false;
-      if (hasError) {
-        // if hasError is true, quantity was not updated : allow checkout
-        $checkoutBtn.removeClass('disabled');
-      }
-    } else if (!hasError && isUpdateOperation) {
-      hasError = false;
-      isUpdateOperation = false;
-      $(prestashop.themeSelectors.notifications.container).html('');
-      $checkoutBtn.removeClass('disabled');
-    }
-  },
-  checkUpdateOperation: (resp) => {
-    /**
-     * resp.hasError can be not defined but resp.errors not empty: quantity is updated but order cannot be placed
-     * when resp.hasError=true, quantity is not updated
-     */
-    const {hasError: hasErrorOccurred, errors: errorData} = resp;
-    hasError = hasErrorOccurred ?? false;
-    const errors = errorData ?? '';
-
-    // 1.7.2.x returns errors as string, 1.7.3.x returns array
-    if (errors instanceof Array) {
-      errorMsg = errors.join(' ');
-    } else {
-      errorMsg = errors;
-    }
-
-    isUpdateOperation = true;
-  },
-};
 
 /**
  * Attach Bootstrap TouchSpin event handlers
@@ -81,36 +26,18 @@ function createSpin() {
     });
   });
 
-  $(prestashop.themeSelectors.touchspin).off('touchstart.touchspin');
-
   CheckUpdateQuantityOperations.switchErrorStat();
 }
 
-const preventCustomModalOpen = (event) => {
-  if (window.shouldPreventModal) {
-    event.preventDefault();
-
-    return false;
-  }
-
-  return true;
-};
-
 $(document).ready(() => {
-  const productLineInCartSelector = prestashop.themeSelectors.cart.productLineQty;
+  const productLineInCartSelector = '.js-cart-line-product-quantity';
   const promises = [];
 
   prestashop.on('updateCart', () => {
-    $(prestashop.themeSelectors.cart.quickview).modal('hide');
+    $('.quickview').modal('hide');
   });
 
   prestashop.on('updatedCart', () => {
-    window.shouldPreventModal = false;
-
-    $(prestashop.themeSelectors.product.customizationModal).on('show.bs.modal', (modalEvent) => {
-      preventCustomModalOpen(modalEvent);
-    });
-
     createSpin();
   });
 
@@ -127,7 +54,7 @@ $(document).ready(() => {
   }
 
   function findCartLineProductQuantityInput($target) {
-    const $input = $target.parents(prestashop.themeSelectors.cart.touchspin).find(productLineInCartSelector);
+    const $input = $target.parents('.bootstrap-touchspin').find(productLineInCartSelector);
 
     if ($input.is(':focus')) {
       return null;
@@ -164,13 +91,11 @@ $(document).ready(() => {
     }
 
     const $input = findCartLineProductQuantityInput($target);
-
     if (!$input) {
       return false;
     }
 
     let cartAction = {};
-
     if (shouldIncreaseProductQuantity(namespace)) {
       cartAction = {
         url: $input.data('up-url'),
@@ -194,15 +119,9 @@ $(document).ready(() => {
     }
   };
 
-  const getTouchSpinInput = ($button) => $($button.parents(prestashop.themeSelectors.cart.touchspin).find('input'));
-
-  $(prestashop.themeSelectors.product.customizationModal).on('show.bs.modal', (modalEvent) => {
-    preventCustomModalOpen(modalEvent);
-  });
+  const getTouchSpinInput = ($button) => $($button.parents('.bootstrap-touchspin').find('input'));
 
   const handleCartAction = (event) => {
-    abortPreviousRequests();
-    window.shouldPreventModal = true;
     event.preventDefault();
 
     const $target = $(event.currentTarget);
@@ -217,6 +136,7 @@ $(document).ready(() => {
       return;
     }
 
+    abortPreviousRequests();
     $.ajax({
       url: cartAction.url,
       method: 'POST',
@@ -227,8 +147,8 @@ $(document).ready(() => {
       },
     })
       .then((resp) => {
+        CheckUpdateQuantityOperations.checkUpdateOpertation(resp);
         const $quantityInput = getTouchSpinInput($target);
-        CheckUpdateQuantityOperations.checkUpdateOperation(resp);
         $quantityInput.val(resp.quantity);
 
         // Refresh cart preview
@@ -246,11 +166,13 @@ $(document).ready(() => {
       });
   };
 
-  $body.on('click', prestashop.themeSelectors.cart.actions, handleCartAction);
+  $body.on('click', '[data-link-action="delete-from-cart"], [data-link-action="remove-voucher"]', handleCartAction);
+
+  $body.on('touchspin.on.startdownspin', spinnerSelector, handleCartAction);
+  $body.on('touchspin.on.startupspin', spinnerSelector, handleCartAction);
 
   function sendUpdateQuantityInCartRequest(updateQuantityInCartUrl, requestData, $target) {
     abortPreviousRequests();
-    window.shouldPreventModal = true;
 
     return $.ajax({
       url: updateQuantityInCartUrl,
@@ -262,10 +184,16 @@ $(document).ready(() => {
       },
     })
       .then((resp) => {
-        CheckUpdateQuantityOperations.checkUpdateOperation(resp);
-
+        CheckUpdateQuantityOperations.checkUpdateOpertation(resp);
         $target.val(resp.quantity);
-        const dataset = ($target && $target.dataset) ? $target.dataset : resp;
+
+        let dataset;
+        if ($target && $target.dataset) {
+          // eslint-disable-next-line
+          dataset = $target.dataset;
+        } else {
+          dataset = resp;
+        }
 
         // Refresh cart preview
         prestashop.emit('updateCart', {
@@ -281,10 +209,6 @@ $(document).ready(() => {
       });
   }
 
-  function getQuantityChangeType($quantity) {
-    return $quantity > 0 ? 'up' : 'down';
-  }
-
   function getRequestData(quantity) {
     return {
       ajax: '1',
@@ -292,6 +216,10 @@ $(document).ready(() => {
       action: 'update',
       op: getQuantityChangeType(quantity),
     };
+  }
+
+  function getQuantityChangeType($quantity) {
+    return $quantity > 0 ? 'up' : 'down';
   }
 
   function updateProductQuantityInCart(event) {
@@ -303,72 +231,107 @@ $(document).ready(() => {
     const targetValue = $target.val();
     /* eslint-disable */
     if (targetValue != parseInt(targetValue, 10) || targetValue < 0 || isNaN(targetValue)) {
-      window.shouldPreventModal = false;
       $target.val(baseValue);
       return;
     }
     /* eslint-enable */
     // There should be a new product quantity in cart
     const qty = targetValue - baseValue;
-
     if (qty === 0) {
       return;
     }
 
-    if (targetValue === '0') {
-      $target.closest('.product-line-actions').find('[data-link-action="delete-from-cart"]').click();
-    } else {
-      $target.attr('value', targetValue);
-      sendUpdateQuantityInCartRequest(updateQuantityInCartUrl, getRequestData(qty), $target);
-    }
+    $target.attr('value', targetValue);
+    sendUpdateQuantityInCartRequest(updateQuantityInCartUrl, getRequestData(qty), $target);
   }
-
-  $body.on('touchspin.on.stopspin', spinnerSelector, debounce(updateProductQuantityInCart));
 
   $body.on('focusout keyup', productLineInCartSelector, (event) => {
     if (event.type === 'keyup') {
       if (event.keyCode === 13) {
-        isUpdateOperation = true;
         updateProductQuantityInCart(event);
       }
-
       return false;
     }
 
-    if (!isUpdateOperation) {
-      updateProductQuantityInCart(event);
-    }
+    updateProductQuantityInCart(event);
 
     return false;
   });
 
   const $timeoutEffect = 400;
 
-  $body.on('hidden.bs.collapse', prestashop.themeSelectors.cart.promoCode, () => {
-    $(prestashop.themeSelectors.cart.displayPromo).show($timeoutEffect);
+  $body.on('hidden.bs.collapse', '#promo-code', () => {
+    $('.display-promo').show($timeoutEffect);
   });
 
-  $body.on('click', prestashop.themeSelectors.cart.promoCodeButton, (event) => {
+  $body.on('click', '.promo-code-button', (event) => {
     event.preventDefault();
 
-    $(prestashop.themeSelectors.cart.promoCode).collapse('toggle');
+    $('#promo-code').collapse('toggle');
   });
 
-  $body.on('click', prestashop.themeSelectors.cart.displayPromo, (event) => {
+  $body.on('click', '.display-promo', (event) => {
     $(event.currentTarget).hide($timeoutEffect);
   });
 
-  $body.on('click', prestashop.themeSelectors.cart.discountCode, (event) => {
+  $body.on('click', '.js-discount .code', (event) => {
     event.stopPropagation();
 
     const $code = $(event.currentTarget);
-    const $discountInput = $(prestashop.themeSelectors.cart.discountName);
+    const $discountInput = $('[name=discount_name]');
 
     $discountInput.val($code.text());
     // Show promo code field
-    $(prestashop.themeSelectors.cart.promoCode).collapse('show');
-    $(prestashop.themeSelectors.cart.displayPromo).hide($timeoutEffect);
+    $('#promo-code').collapse('show');
+    $('.display-promo').hide($timeoutEffect);
 
     return false;
   });
 });
+
+const CheckUpdateQuantityOperations = {
+  switchErrorStat: () => {
+    /**
+     * if errorMsg is not empty or if notifications are shown, we have error to display
+     * if hasError is true, quantity was not updated : we don't disable checkout button
+     */
+    const $checkoutBtn = $('.checkout a');
+    if ($('#notifications article.alert-danger').length || (errorMsg !== '' && !hasError)) {
+      $checkoutBtn.addClass('disabled');
+    }
+
+    if (errorMsg !== '') {
+      // eslint-disable-next-line
+      const strError = ` <article class="alert alert-danger" role="alert" data-alert="danger"><ul><li>${errorMsg}</li></ul></article>`;
+      $('#notifications .container').html(strError);
+      errorMsg = '';
+      isUpdateOperation = false;
+      if (hasError) {
+        // if hasError is true, quantity was not updated : allow checkout
+        $checkoutBtn.removeClass('disabled');
+      }
+    } else if (!hasError && isUpdateOperation) {
+      hasError = false;
+      isUpdateOperation = false;
+      $('#notifications .container').html('');
+      $checkoutBtn.removeClass('disabled');
+    }
+  },
+  checkUpdateOpertation: (resp) => {
+    /**
+     * resp.hasError can be not defined but resp.errors not empty: quantity is updated but order cannot be placed
+     * when resp.hasError=true, quantity is not updated
+     */
+    // eslint-disable-next-line
+    hasError = resp.hasOwnProperty('hasError');
+    const errors = resp.errors || '';
+    // 1.7.2.x returns errors as string, 1.7.3.x returns array
+    if (errors instanceof Array) {
+      errorMsg = errors.join(' ');
+    } else {
+      errorMsg = errors;
+    }
+
+    isUpdateOperation = true;
+  },
+};

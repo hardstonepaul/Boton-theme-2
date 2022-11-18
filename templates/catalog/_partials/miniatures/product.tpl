@@ -23,56 +23,32 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 {block name='product_miniature_item'}
-<div class="js-product product{if !empty($productClasses)} {$productClasses}{/if}">
-  <article class="product-miniature js-product-miniature" data-id-product="{$product.id_product}" data-id-product-attribute="{$product.id_product_attribute}">
+<div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+  {if isset($position)}<meta itemprop="position" content="{$position}" />{/if}
+  <article class="product-miniature js-product-miniature" data-id-product="{$product.id_product}" data-id-product-attribute="{$product.id_product_attribute}" itemprop="item" itemscope itemtype="https://schema.org/Product">
     <div class="thumbnail-container">
-      <div class="thumbnail-top">
-        {block name='product_thumbnail'}
-          {if $product.cover}
-            <a href="{$product.url}" class="thumbnail product-thumbnail">
-              <img
-                src="{$product.cover.bySize.home_default.url}"
-                alt="{if !empty($product.cover.legend)}{$product.cover.legend}{else}{$product.name|truncate:30:'...'}{/if}"
-                loading="lazy"
-                data-full-size-image-url="{$product.cover.large.url}"
-                width="{$product.cover.bySize.home_default.width}"
-                height="{$product.cover.bySize.home_default.height}"
+      {block name='product_thumbnail'}
+        {if $product.cover}
+          <a href="{$product.url}" class="thumbnail product-thumbnail">
+            <img
+              src="{$product.cover.bySize.home_default.url}"
+              alt="{if !empty($product.cover.legend)}{$product.cover.legend}{else}{$product.name|truncate:30:'...'}{/if}"
+              loading="lazy"
+              data-full-size-image-url="{$product.cover.large.url}"
               />
-            </a>
-          {else}
-            <a href="{$product.url}" class="thumbnail product-thumbnail">
-              <img
-                src="{$urls.no_picture_image.bySize.home_default.url}"
-                loading="lazy"
-                width="{$urls.no_picture_image.bySize.home_default.width}"
-                height="{$urls.no_picture_image.bySize.home_default.height}"
-              />
-            </a>
-          {/if}
-        {/block}
-
-        <div class="highlighted-informations{if !$product.main_variants} no-variants{/if}">
-          {block name='quick_view'}
-            <a class="quick-view js-quick-view" href="#" data-link-action="quickview">
-              <i class="material-icons search">&#xE8B6;</i> {l s='Quick view' d='Shop.Theme.Actions'}
-            </a>
-          {/block}
-
-          {block name='product_variants'}
-            {if $product.main_variants}
-              {include file='catalog/_partials/variant-links.tpl' variants=$product.main_variants}
-            {/if}
-          {/block}
-        </div>
-      </div>
+          </a>
+        {else}
+          <a href="{$product.url}" class="thumbnail product-thumbnail">
+            <img src="{$urls.no_picture_image.bySize.home_default.url}" loading="lazy" />
+          </a>
+        {/if}
+      {/block}
 
       <div class="product-description">
         {block name='product_name'}
-          {if $page.page_name == 'index'}
-            <h3 class="h3 product-title"><a href="{$product.url}" content="{$product.url}">{$product.name|truncate:30:'...'}</a></h3>
-          {else}
-            <h2 class="h3 product-title"><a href="{$product.url}" content="{$product.url}">{$product.name|truncate:30:'...'}</a></h2>
-          {/if}
+          {*{if $page.page_name == 'index'}
+          {else}{/if}*}
+          <h2 class="h2 product-title" itemprop="name"><a href="{$product.url}" itemprop="url" content="{$product.url}">{$product.name|truncate:30:'...'}</a></h2>
         {/block}
 
         {block name='product_price_and_shipping'}
@@ -97,14 +73,36 @@
                   {$smarty.capture.custom_price nofilter}
                 {else}
                   {$product.price}
+                  {if $configuration.display_taxes_label}
+                  <sup>
+                    {if $product.rate == 0}
+                      {l s='No TAX' d='Shop.Theme.Catalog'}
+                    {else}
+                      {l s='+ TAX' d='Shop.Theme.Catalog'}
+                    {/if}
+                  </sup>
+                {/if}
                 {/if}
               </span>
+
+              <div itemprop="offers" itemscope itemtype="https://schema.org/Offer" class="invisible">
+                <meta itemprop="priceCurrency" content="{$currency.iso_code}" />
+                <meta itemprop="price" content="{$product.price_amount}" />
+              </div>
 
               {hook h='displayProductPriceBlock' product=$product type='unit_price'}
 
               {hook h='displayProductPriceBlock' product=$product type='weight'}
             </div>
+            <div class="t-qty">
+              {if $product.quantity_all_versions == 0}
+              {l s='Out of Stock' d='Shop.Theme.Catalog'}
+              {else}
+              {l s='Total Qty:' d='Shop.Theme.Catalog'} {$product.quantity_all_versions}
+              {/if}
+            </div>
           {/if}
+
         {/block}
 
         {block name='product_reviews'}
@@ -113,6 +111,20 @@
       </div>
 
       {include file='catalog/_partials/product-flags.tpl'}
+
+      <div class="highlighted-informations{if !$product.main_variants} no-variants{/if} hidden-sm-down">
+        {block name='quick_view'}
+          <a class="quick-view" href="#" data-link-action="quickview">
+            <i class="material-icons search">&#xE8B6;</i> {l s='Quick view' d='Shop.Theme.Actions'}
+          </a>
+        {/block}
+
+        {block name='product_variants'}
+          {if $product.main_variants}
+            {include file='catalog/_partials/variant-links.tpl' variants=$product.main_variants}
+          {/if}
+        {/block}
+      </div>
     </div>
   </article>
 </div>

@@ -27,6 +27,32 @@ import prestashop from 'prestashop';
 import ProductSelect from './components/product-select';
 
 $(document).ready(() => {
+  createProductSpin();
+  createInputFile();
+  coverImage();
+  imageScrollBox();
+
+  prestashop.on('updatedProduct', (event) => {
+    createInputFile();
+    coverImage();
+    if (event && event.product_minimal_quantity) {
+      const minimalProductQuantity = parseInt(event.product_minimal_quantity, 10);
+      const quantityInputSelector = prestashop.selectors.quantityWanted;
+      const quantityInput = $(quantityInputSelector);
+
+      // @see http://www.virtuosoft.eu/code/bootstrap-touchspin/ about Bootstrap TouchSpin
+      quantityInput.trigger('touchspin.updatesettings', {
+        min: minimalProductQuantity,
+      });
+    }
+    imageScrollBox();
+    $($(prestashop.themeSelectors.product.activeTabs).attr('href')).addClass('active').removeClass('fade');
+    $(prestashop.themeSelectors.product.imagesModal).replaceWith(event.product_images_modal);
+
+    const productSelect = new ProductSelect();
+    productSelect.init();
+  });
+
   function coverImage() {
     const productCover = $(prestashop.themeSelectors.product.cover);
     let thumbSelected = $(prestashop.themeSelectors.product.selected);
@@ -37,7 +63,7 @@ $(document).ready(() => {
       $(prestashop.themeSelectors.product.modalProductCover).attr('src', newSelectedThumb.data('image-large-src'));
       selectedThumb.removeClass('selected');
       newSelectedThumb.addClass('selected');
-      productCover.prop('src', newSelectedThumb.data('image-medium-src'));
+      productCover.prop('src', newSelectedThumb.data('image-large-src'));
     };
 
     $(prestashop.themeSelectors.product.thumb).on('click', (event) => {
@@ -64,7 +90,6 @@ $(document).ready(() => {
           }
         }
       },
-      allowPageScroll: 'vertical',
     });
   }
 
@@ -91,10 +116,11 @@ $(document).ready(() => {
 
   function createInputFile() {
     $(prestashop.themeSelectors.fileInput).on('change', (event) => {
-      const target = $(event.currentTarget)[0];
-      const file = (target) ? target.files[0] : null;
+      let target;
+      let file;
 
-      if (target && file) {
+      // eslint-disable-next-line
+      if ((target = $(event.currentTarget)[0]) && (file = target.files[0])) {
         $(target).prev().text(file.name);
       }
     });
@@ -113,9 +139,7 @@ $(document).ready(() => {
       max: 1000000,
     });
 
-    $(prestashop.themeSelectors.touchspin).off('touchstart.touchspin');
-
-    $quantityInput.on('focusout', () => {
+    $quantityInput.focusout(() => {
       if ($quantityInput.val() === '' || $quantityInput.val() < $quantityInput.attr('min')) {
         $quantityInput.val($quantityInput.attr('min'));
         $quantityInput.trigger('change');
@@ -132,45 +156,4 @@ $(document).ready(() => {
       }
     });
   }
-
-  function addJsProductTabActiveSelector() {
-    const nav = $(prestashop.themeSelectors.product.tabs);
-    nav.on('show.bs.tab', (e) => {
-      const target = $(e.target);
-      target.addClass(prestashop.themeSelectors.product.activeNavClass);
-      $(target.attr('href')).addClass(prestashop.themeSelectors.product.activeTabClass);
-    });
-    nav.on('hide.bs.tab', (e) => {
-      const target = $(e.target);
-      target.removeClass(prestashop.themeSelectors.product.activeNavClass);
-      $(target.attr('href')).removeClass(prestashop.themeSelectors.product.activeTabClass);
-    });
-  }
-
-  createProductSpin();
-  createInputFile();
-  coverImage();
-  imageScrollBox();
-  addJsProductTabActiveSelector();
-
-  prestashop.on('updatedProduct', (event) => {
-    createInputFile();
-    coverImage();
-    if (event && event.product_minimal_quantity) {
-      const minimalProductQuantity = parseInt(event.product_minimal_quantity, 10);
-      const quantityInputSelector = prestashop.selectors.quantityWanted;
-      const quantityInput = $(quantityInputSelector);
-
-      // @see http://www.virtuosoft.eu/code/bootstrap-touchspin/ about Bootstrap TouchSpin
-      quantityInput.trigger('touchspin.updatesettings', {
-        min: minimalProductQuantity,
-      });
-    }
-    imageScrollBox();
-    $($(prestashop.themeSelectors.product.activeTabs).attr('href')).addClass('active').removeClass('fade');
-    $(prestashop.themeSelectors.product.imagesModal).replaceWith(event.product_images_modal);
-
-    const productSelect = new ProductSelect();
-    productSelect.init();
-  });
 });

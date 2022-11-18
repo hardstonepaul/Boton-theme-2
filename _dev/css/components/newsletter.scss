@@ -1,25 +1,29 @@
 .block_newsletter {
   @include search-box();
-  float: inherit;
-  width: 100%;
-  max-width: 50rem;
-  margin: auto;
-  margin-bottom: 0.625rem;
-  clear: both;
+  //float: inherit;
+  //width: 100%;
+  //max-width: 50rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
   font-size: $font-size-sm;
-  background: $white;
+  background: #fff;
+  border-radius: 1rem;
+  @include box-shadow();
 
+  img {
+    width: 100%;
+    border-radius: 1rem 1rem 0 0;
+    margin-bottom: 1.5rem;
+  }
   #block-newsletter-label {
     font-size: 1.3125rem;
     line-height: 1.75rem;
     color: $gray-darker;
   }
-
   form {
     .input-wrapper {
       overflow: hidden;
     }
-
     .row {
       .col-xs-12:last-of-type {
         p {
@@ -27,14 +31,12 @@
           color: $gray;
         }
       }
-
       .col-xs-12:first-of-type {
         .btn-primary:first-of-type {
           margin-left: 0.5rem;
         }
       }
     }
-
     input[type="email"] {
       width: 100%;
       padding: 11px;
@@ -46,14 +48,12 @@
         outline: 0;
       }
     }
-
     input {
       height: 42px;
       box-shadow: none;
     }
   }
 }
-
 #footer {
   .block_newsletter {
     p {
@@ -65,16 +65,12 @@
     }
   }
 }
-
 #left-column {
   .block_newsletter {
+    @include box-shadow();
     padding: 1.563rem 1.25rem;
     margin-bottom: 1.563rem;
   }
 }
-
 @include media-breakpoint-down(sm) {
-  .block_newsletter {
-    padding-top: 1rem;
-  }
 }

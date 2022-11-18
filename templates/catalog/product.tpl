@@ -22,10 +22,16 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
+{*assign var="group_t" value="" scope='root'*} {*una variable para vereifacar si el grupo es color*}
+
 {extends file=$layout}
 
 {block name='head' append}
   <meta property="og:type" content="product">
+  <meta property="og:url" content="{$urls.current_url}">
+  <meta property="og:title" content="{$page.meta.title}">
+  <meta property="og:site_name" content="{$shop.name}">
+  <meta property="og:description" content="{$page.meta.description}">
   {if $product.cover}
     <meta property="og:image" content="{$product.cover.large.url}">
   {/if}
@@ -42,16 +48,12 @@
   {/if}
 {/block}
 
-{block name='head_microdata_special'}
-  {include file='_partials/microdata/product-jsonld.tpl'}
-{/block}
-
 {block name='content'}
 
-  <section id="main">
-    <meta content="{$product.url}">
+  <section id="main" itemscope itemtype="https://schema.org/Product">
+    <meta itemprop="url" content="{$product.url}">
 
-    <div class="row product-container js-product-container">
+    <div class="row product-container">
       <div class="col-md-6">
         {block name='page_content_container'}
           <section class="page-content" id="content">
@@ -70,10 +72,10 @@
           </section>
         {/block}
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 pro-cont">
           {block name='page_header_container'}
             {block name='page_header'}
-              <h1 class="h1">{block name='page_title'}{$product.name}{/block}</h1>
+              <h1 class="h1" itemprop="name">{block name='page_title'}{$product.name}{/block}</h1>
             {/block}
           {/block}
           {block name='product_prices'}
@@ -82,7 +84,7 @@
 
           <div class="product-information">
             {block name='product_description_short'}
-              <div id="product-description-short-{$product.id}" class="product-description">{$product.description_short nofilter}</div>
+              <div id="product-description-short-{$product.id}" class="product-description" itemprop="description">{$product.description_short nofilter}</div>
             {/block}
 
             {if $product.is_customizable && count($product.customizations.fields)}
@@ -91,12 +93,12 @@
               {/block}
             {/if}
 
-            <div class="product-actions js-product-actions">
+            <div class="product-actions">
               {block name='product_buy'}
                 <form action="{$urls.pages.cart}" method="post" id="add-to-cart-or-refresh">
                   <input type="hidden" name="token" value="{$static_token}">
                   <input type="hidden" name="id_product" value="{$product.id}" id="product_page_product_id">
-                  <input type="hidden" name="id_customization" value="{$product.id_customization}" id="product_customization_id" class="js-product-customization-id">
+                  <input type="hidden" name="id_customization" value="{$product.id_customization}" id="product_customization_id">
 
                   {block name='product_variants'}
                     {include file='catalog/_partials/product-variants.tpl'}
@@ -141,10 +143,19 @@
             {block name='product_tabs'}
               <div class="tabs">
                 <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a
+                      class="nav-link{if !$product.description} active{/if}"
+                      data-toggle="tab"
+                      href="#product-details"
+                      role="tab"
+                      aria-controls="product-details"
+                      {if !$product.description} aria-selected="true"{/if}>{l s='Product Details' d='Shop.Theme.Catalog'}</a>
+                  </li>
                   {if $product.description}
                     <li class="nav-item">
                        <a
-                         class="nav-link{if $product.description} active js-product-nav-active{/if}"
+                         class="nav-link{if $product.description} active{/if}"
                          data-toggle="tab"
                          href="#description"
                          role="tab"
@@ -152,15 +163,6 @@
                          {if $product.description} aria-selected="true"{/if}>{l s='Description' d='Shop.Theme.Catalog'}</a>
                     </li>
                   {/if}
-                  <li class="nav-item">
-                    <a
-                      class="nav-link{if !$product.description} active js-product-nav-active{/if}"
-                      data-toggle="tab"
-                      href="#product-details"
-                      role="tab"
-                      aria-controls="product-details"
-                      {if !$product.description} aria-selected="true"{/if}>{l s='Product Details' d='Shop.Theme.Catalog'}</a>
-                  </li>
                   {if $product.attachments}
                     <li class="nav-item">
                       <a
@@ -184,7 +186,7 @@
                 </ul>
 
                 <div class="tab-content" id="tab-content">
-                 <div class="tab-pane fade in{if $product.description} active js-product-tab-active{/if}" id="description" role="tabpanel">
+                 <div class="tab-pane fade in{if $product.description} active{/if}" id="description" role="tabpanel">
                    {block name='product_description'}
                      <div class="product-description">{$product.description nofilter}</div>
                    {/block}
@@ -229,10 +231,10 @@
       {if $accessories}
         <section class="product-accessories clearfix">
           <p class="h5 text-uppercase">{l s='You might also like' d='Shop.Theme.Catalog'}</p>
-          <div class="products row">
+          <div class="products" itemscope itemtype="https://schema.org/ItemList">
             {foreach from=$accessories item="product_accessory" key="position"}
               {block name='product_miniature'}
-                {include file='catalog/_partials/miniatures/product.tpl' product=$product_accessory position=$position productClasses="col-xs-12 col-sm-6 col-lg-4 col-xl-3"}
+                {include file='catalog/_partials/miniatures/product.tpl' product=$product_accessory position=$position}
               {/block}
             {/foreach}
           </div>

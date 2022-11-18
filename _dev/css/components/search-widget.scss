@@ -1,21 +1,33 @@
 .search-widget {
-  display: inline-block;
+  margin-left: .625rem;
+  width: 50%;
   @include search-box();
+}
+/*traido del css del modulo ps_searchbar - cuando actualize booral el contenido ->*/
+#search_widget {
+  margin-bottom: .625rem;
+  overflow: auto;
+  form {
+    position: relative;
+    i {
+      position: absolute;
+      padding: .5rem;
+    }
+    i.clear {
+      right: 15px;
+      display: none;
+    }
+    input {
+      width: 100%;
+    }
+  }
 }
 
 .header-top {
-  &-right {
-    @include media-breakpoint-down(xs) {
-      width: 100%;
-      padding-right: 15px;
-    }
-  }
-
-  .search-widgets {
+  .search-widget {
     form {
       input[type="text"] {
-        width: 100%;
-        min-width: inherit;
+        //min-width: inherit;
         color: $gray-second;
         background: $gray-lighter;
 
@@ -29,13 +41,6 @@
         bottom: inherit;
         transform: translateY(-50%);
       }
-    }
-  }
-
-  // stylelint-disable-next-line
-  #search_widget {
-    input {
-      padding-right: 1rem;
     }
   }
 }
@@ -64,32 +69,24 @@
 
 /*** Responsive part ***/
 @include media-breakpoint-down(sm) {
-  .header-top {
+  .search-conte {
     .search-widget {
-      float: none;
-
+      width: 45%;
       form {
         margin: 0 auto;
-
         input[type="text"] {
-          min-width: inherit;
-          background: $white;
+          background: #fff;
         }
       }
     }
+    .ad-conte {
+      width: 45%;
+    }
   }
 }
-
+/*** para pantalla grande ***/
 @include media-breakpoint-up(md) {
   .search-widget {
-    min-width: 15.63rem;
-  }
-}
 
-@include media-breakpoint-up(sm) {
-  .header-top {
-    .search-widgets {
-      max-width: 13rem;
-    }
   }
 }

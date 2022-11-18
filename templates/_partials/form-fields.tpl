@@ -25,24 +25,24 @@
 {if $field.type == 'hidden'}
 
   {block name='form_field_item_hidden'}
-    <input type="hidden" name="{$field.name}" value="{$field.value|default}">
+    <input type="hidden" name="{$field.name}" value="{$field.value}">
   {/block}
 
 {else}
 
   <div class="form-group row {if !empty($field.errors)}has-error{/if}">
-    <label class="col-md-3 form-control-label{if $field.required} required{/if}" for="field-{$field.name}">
+    <label class="col-md-3 form-control-label{if $field.required} required{/if}">
       {if $field.type !== 'checkbox'}
         {$field.label}
       {/if}
     </label>
-    <div class="col-md-6 js-input-column{if ($field.type === 'radio-buttons')} form-control-valign{/if}">
+    <div class="col-md-6{if ($field.type === 'radio-buttons')} form-control-valign{/if}">
 
       {if $field.type === 'select'}
 
         {block name='form_field_item_select'}
-          <select id="field-{$field.name}" class="form-control form-control-select" name="{$field.name}" {if $field.required}required{/if}>
-            <option value disabled selected>{l s='Please choose' d='Shop.Forms.Labels'}</option>
+          <select class="form-control form-control-select" name="{$field.name}" {if $field.required}required{/if}>
+            <option value disabled selected>{l s='-- please choose --' d='Shop.Forms.Labels'}</option>
             {foreach from=$field.availableValues item="label" key="value"}
               <option value="{$value}" {if $value eq $field.value} selected {/if}>{$label}</option>
             {/foreach}
@@ -53,12 +53,11 @@
 
         {block name='form_field_item_country'}
           <select
-            id="field-{$field.name}"
-            class="form-control form-control-select js-country"
-            name="{$field.name}"
-            {if $field.required}required{/if}
+          class="form-control form-control-select js-country"
+          name="{$field.name}"
+          {if $field.required}required{/if}
           >
-            <option value disabled selected>{l s='Please choose' d='Shop.Forms.Labels'}</option>
+            <option value disabled selected>{l s='-- please choose --' d='Shop.Forms.Labels'}</option>
             {foreach from=$field.availableValues item="label" key="value"}
               <option value="{$value}" {if $value eq $field.value} selected {/if}>{$label}</option>
             {/foreach}
@@ -69,11 +68,10 @@
 
         {block name='form_field_item_radio'}
           {foreach from=$field.availableValues item="label" key="value"}
-            <label class="radio-inline" for="field-{$field.name}-{$value}">
+            <label class="radio-inline">
               <span class="custom-radio">
                 <input
                   name="{$field.name}"
-                  id="field-{$field.name}-{$value}"
                   type="radio"
                   value="{$value}"
                   {if $field.required}required{/if}
@@ -101,7 +99,7 @@
       {elseif $field.type === 'date'}
 
         {block name='form_field_item_date'}
-          <input id="field-{$field.name}" name="{$field.name}" class="form-control" type="date" value="{$field.value|default}"{if isset($field.availableValues.placeholder)} placeholder="{$field.availableValues.placeholder}"{/if}>
+          <input name="{$field.name}" class="form-control" type="date" value="{$field.value}" placeholder="{if isset($field.availableValues.placeholder)}{$field.availableValues.placeholder}{/if}">
           {if isset($field.availableValues.comment)}
             <span class="form-control-comment">
               {$field.availableValues.comment}
@@ -115,7 +113,7 @@
           <div class="js-parent-focus">
             {html_select_date
             field_order=DMY
-            time={$field.value|default}
+            time={$field.value}
             field_array={$field.name}
             prefix=false
             reverse_years=true
@@ -136,14 +134,10 @@
         {block name='form_field_item_password'}
           <div class="input-group js-parent-focus">
             <input
-              id="field-{$field.name}"
               class="form-control js-child-focus js-visible-password"
               name="{$field.name}"
-              aria-label="{l s='Password input' d='Shop.Forms.Help'}"
+              title="{l s='At least 5 characters long' d='Shop.Forms.Help'}"
               type="password"
-              {if isset($configuration.password_policy.minimum_length)}data-minlength="{$configuration.password_policy.minimum_length}"{/if}
-              {if isset($configuration.password_policy.maximum_length)}data-maxlength="{$configuration.password_policy.maximum_length}"{/if}
-              {if isset($configuration.password_policy.minimum_score)}data-minscore="{$configuration.password_policy.minimum_score}"{/if}
               {if $field.autocomplete}autocomplete="{$field.autocomplete}"{/if}
               value=""
               pattern=".{literal}{{/literal}5,{literal}}{/literal}"
@@ -167,11 +161,10 @@
 
         {block name='form_field_item_other'}
           <input
-            id="field-{$field.name}"
             class="form-control"
             name="{$field.name}"
             type="{$field.type}"
-            value="{$field.value|default}"
+            value="{$field.value}"
             {if $field.autocomplete}autocomplete="{$field.autocomplete}"{/if}
             {if isset($field.availableValues.placeholder)}placeholder="{$field.availableValues.placeholder}"{/if}
             {if $field.maxLength}maxlength="{$field.maxLength}"{/if}

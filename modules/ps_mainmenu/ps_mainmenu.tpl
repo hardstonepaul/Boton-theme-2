@@ -13,12 +13,12 @@
                 {if $node.children|count}
                   {* Cannot use page identifier as we can have the same page several times *}
                   {assign var=_expand_id value=10|mt_rand:100000}
-                  <span class="float-xs-right hidden-md-up">
+                  {*<span class="float-xs-right hidden-md-up">
                     <span data-target="#top_sub_menu_{$_expand_id}" data-toggle="collapse" class="navbar-toggler collapse-icons">
                       <i class="material-icons add">&#xE313;</i>
                       <i class="material-icons remove">&#xE316;</i>
                     </span>
-                  </span>
+                  </span>*}
                 {/if}
                 {$node.label}
               </a>
@@ -33,7 +33,7 @@
     {/if}
 {/function}
 
-<div class="menu js-top-menu position-static hidden-sm-down" id="_desktop_top_menu">
+<div class="menu" id="_desktop_top_menu">
     {menu nodes=$menu.children}
-    <div class="clearfix"></div>
 </div>
+<div class="clearfix"></div>

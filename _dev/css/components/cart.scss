@@ -19,7 +19,6 @@
 
     .btn-primary {
       width: 100%;
-      white-space: normal;
     }
   }
 
@@ -28,6 +27,7 @@
   }
 
   &.cart-summary-totals {
+    padding: 0 1.25rem 0.825rem;
 
     .cart-summary-line {
       padding: 0.5rem 0.2rem 0;
@@ -111,7 +111,6 @@
 
   .card-block {
     padding: 1rem;
-
     h1 {
       margin-bottom: 0;
       font-size: 1.5rem;
@@ -169,7 +168,7 @@
       position: relative;
       display: none;
       margin-top: 1.25rem;
-      color: $white;
+      color: #fff;
       background: $brand-danger;
 
       &::after {
@@ -297,12 +296,10 @@
       color: $brand-success;
     }
 
-    .unit-price-cart {
-      overflow: hidden;
+    > .unit-price-cart {
+      padding-left: 0.3125rem;
       font-size: 0.875rem;
-      font-weight: 500;
       color: $gray;
-      text-overflow: ellipsis;
     }
   }
 }

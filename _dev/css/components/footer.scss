@@ -1,13 +1,6 @@
 #footer {
-  padding-top: 2.5rem;
+  padding-top: 1rem;
 }
-
-#blockEmailSubscription_displayFooterBefore {
-  float: inherit;
-  width: 100%;
-  margin: auto;
-}
-
 .block-contact {
   font-size: 0.875rem;
   color: $gray;
@@ -15,11 +8,9 @@
   .block-contact-title {
     color: $gray-darker;
   }
-
   .navbar-toggler .material-icons {
     color: $gray-darker;
   }
-
   @include media-breakpoint-down(sm) {
     #contact-infos {
       padding: 0.625rem;
@@ -27,13 +18,11 @@
     }
   }
 }
-
 .linklist {
   .blockcms-title a {
     color: $gray-darker;
   }
 }
-
 .account-list a {
   color: $gray;
 
@@ -41,7 +30,6 @@
     color: $brand-primary;
   }
 }
-
 .blockcms-title,
 .myaccount-title,
 .myaccount-title a,
@@ -49,38 +37,37 @@
   font-size: $base-font-size;
   font-weight: 700;
 }
-
 .block-social {
-  text-align: right;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 
   ul {
     display: flex;
+    justify-content: center;
 
     @include media-breakpoint-down(sm) {
       flex-flow: wrap;
     }
-
     li {
       display: inline-block;
-      width: 2.5rem;
-      height: 2.5rem;
-      margin: 0.125rem;
+      width: 3rem;
+      height: 3rem;
+      margin: .3rem;
       cursor: pointer;
       background-color: $gray-light;
       background-repeat: no-repeat;
+      background-position: center center;
+      @include border-radius($border-radius-sm);
 
       @include media-breakpoint-down(sm) {
-        width: 2rem;
-        height: 2rem;
         margin-right: 1.3rem;
         margin-bottom: 1.3rem;
         background-size: contain;
       }
-
       &:hover {
         background-color: $brand-primary;
       }
-
       a {
         display: block;
         height: 100%;
@@ -95,7 +82,6 @@
     }
   }
 }
-
 .facebook {
   background-image: url("../img/facebook.svg");
 
@@ -103,7 +89,6 @@
     content: "";
     background-image: url("../img/facebook-blue.svg");
   }
-
   &.icon-gray {
     background-image: url("../img/facebook-gray.svg");
 
@@ -112,7 +97,6 @@
     }
   }
 }
-
 .twitter {
   background-image: url("../img/twitter.svg");
 
@@ -120,7 +104,6 @@
     content: "";
     background-image: url("../img/twitter-blue.svg");
   }
-
   &.icon-gray {
     background-image: url("../img/twitter-gray.svg");
 
@@ -129,20 +112,16 @@
     }
   }
 }
-
 .linkedin {
   background-image: url("../img/linkedin.svg");
-  background-position: center center;
-}
 
+}
 .rss {
   background-image: url("../img/rss.svg");
 }
-
 .youtube {
   background-image: url("../img/youtube.svg");
 }
-
 .googleplus {
   background-image: url("../img/gplus.svg");
 
@@ -150,7 +129,6 @@
     content: "";
     background-image: url("../img/gplus-blue.svg");
   }
-
   &.icon-gray {
     background-image: url("../img/gplus-gray.svg");
 
@@ -159,13 +137,11 @@
     }
   }
 }
-
 #block_myaccount_infos {
   .myaccount-title a {
     color: $gray-darker;
   }
 }
-
 .pinterest {
   background-image: url("../img/pinterest.svg");
 
@@ -173,7 +149,6 @@
     content: "";
     background-image: url("../img/pinterest-blue.svg");
   }
-
   &.icon-gray {
     background-image: url("../img/pinterest-gray.svg");
 
@@ -182,29 +157,25 @@
     }
   }
 }
-
 .vimeo {
   background-image: url("../img/vimeo.svg");
 }
-
 .instagram {
   background-image: url("../img/instagram.svg");
 }
-
 .footer-container {
   padding-top: $extra-large-space;
   overflow: hidden;
+  box-shadow: 2px 2px 11px 0 rgba(0, 0, 0, 0.3);
 
   .h3,
   .h4 {
     margin-bottom: 1rem;
     font-size: 1rem;
   }
-
   li {
-    margin-bottom: 0.3125rem;
+    //margin-bottom: 0.3125rem;
   }
-
   li a {
     font-size: $font-size-sm;
     color: $gray;
@@ -215,19 +186,81 @@
     }
   }
 }
+.footer-container {
+  margin-top: $medium-space;
+  padding-top: $medium-space;
+  overflow: hidden;
+  box-shadow: inset 0px 10px 10px rgba(0,0,0,0.3);
+  background-image: url("https://esferos.com/imagenes/Portada-Esferos-vacia.jpg");
+  background-position: center;
+  background-size: cover;
+
+  .footer-block {
+    background-color: white;
+    box-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+    padding: $medium-space;
+    border-radius: 10px;
+    //width: calc(25% - 20px);
+    margin: 0px auto $small-space;
+  }
+
+  li {
+    //margin-bottom: 0.3125rem;
+  }
+  li a {
+    color: $gray;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    &:hover {
+      color: $brand-primary;
+    }
+  }
+  .dir-conte {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: $card-border-radius;
+    box-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+    padding: $medium-space;
+    margin: 0px auto $small-space;
+    .dir {
+      padding: $medium-space;
+      width: 20rem;
+    }
+  }
+  .mail-conte {
+    width: calc(100% - 1rem);
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+    padding: $small-space;
+    margin: 0 0 $medium-space;
+  }
+}
+.mail-conte {
+  margin: 10px 0 0 10px;
+  p {
+    font-size: 1.2rem !important;
+  }
+}
 
 .links {
   .collapse {
     display: inherit;
   }
 }
-
 @include media-breakpoint-down(sm) {
   .block_newsletter {
     padding-bottom: 0.625rem;
     border-bottom: 1px solid $gray-lighter;
   }
-
   .footer-container {
     margin-top: 0;
     box-shadow: none;
@@ -238,21 +271,16 @@
       padding-left: 0 !important;
       /* stylelint-enable */
     }
-
     .links {
       .h3 {
         font-size: 1rem;
         line-height: 1.5;
       }
-
       ul {
-        margin-bottom: 0;
-        background-color: $gray-lighter;
-
         > li {
           padding: 0.625rem;
           font-weight: 600;
-          border-bottom: 1px solid $white;
+          border-bottom: 1px solid #fff;
 
           a {
             color: $gray-darker;
@@ -261,7 +289,6 @@
       }
     }
   }
-
   .links {
     .collapse {
       display: none;
@@ -270,7 +297,6 @@
         display: block;
       }
     }
-
     .title {
       padding: 0.625rem;
       cursor: pointer;
@@ -280,29 +306,24 @@
         display: none;
       }
     }
-
     .title[aria-expanded="true"] .collapse-icons {
       .add {
         display: none;
       }
-
       .remove {
         display: block;
       }
     }
-
     .navbar-toggler {
       display: inline-block;
       padding: 0;
     }
   }
 }
-
 @include media-breakpoint-down(md) {
   .block-social {
     text-align: center;
   }
-
   .block-contact {
     padding-left: 1.5rem;
   }

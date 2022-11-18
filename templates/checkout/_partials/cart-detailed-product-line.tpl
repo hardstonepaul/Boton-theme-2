@@ -26,8 +26,8 @@
   <!--  product line left content: image-->
   <div class="product-line-grid-left col-md-3 col-xs-4">
     <span class="product-image media-middle">
-      {if $product.default_image}
-        <img src="{$product.default_image.bySize.cart_default.url}" alt="{$product.name|escape:'quotes'}" loading="lazy">
+      {if $product.cover}
+        <img src="{$product.cover.bySize.cart_default.url}" alt="{$product.name|escape:'quotes'}" loading="lazy">
       {else}
         <img src="{$urls.no_picture_image.bySize.cart_default.url}" loading="lazy" />
       {/if}
@@ -67,7 +67,7 @@
     <br/>
 
     {foreach from=$product.attributes key="attribute" item="value"}
-      <div class="product-line-info {$attribute|lower}">
+      <div class="product-line-info">
         <span class="label">{$attribute}:</span>
         <span class="value">{$value}</span>
       </div>
@@ -78,7 +78,7 @@
       {block name='cart_detailed_product_line_customization'}
         {foreach from=$product.customizations item="customization"}
           <a href="#" data-toggle="modal" data-target="#product-customizations-modal-{$customization.id_customization}">{l s='Product customization' d='Shop.Theme.Catalog'}</a>
-          <div class="modal fade customization-modal js-customization-modal" id="product-customizations-modal-{$customization.id_customization}" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal fade customization-modal" id="product-customizations-modal-{$customization.id_customization}" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -136,7 +136,6 @@
                 pattern="[0-9]*"
                 value="{$product.quantity}"
                 name="product-quantity-spin"
-                aria-label="{l s='%productName% product quantity field' sprintf=['%productName%' => $product.name] d='Shop.Theme.Checkout'}"
               />
             {/if}
           </div>
@@ -162,7 +161,7 @@
               data-link-action            = "delete-from-cart"
               data-id-product             = "{$product.id_product|escape:'javascript'}"
               data-id-product-attribute   = "{$product.id_product_attribute|escape:'javascript'}"
-              data-id-customization       = "{$product.id_customization|default|escape:'javascript'}"
+              data-id-customization   	  = "{$product.id_customization|escape:'javascript'}"
           >
             {if empty($product.is_gift)}
               <i class="material-icons float-xs-left">delete</i>
